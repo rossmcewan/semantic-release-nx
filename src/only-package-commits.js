@@ -6,6 +6,7 @@ const pLimit = require('p-limit');
 const debug = require('debug')('semantic-release:monorepo');
 const { getCommitFiles, getRoot } = require('./git-utils');
 const { mapCommits } = require('./options-transforms');
+const { isAffectedByPath } = require('./nx-utils');
 
 const memoizedGetCommitFiles = memoizeWith(identity, getCommitFiles);
 
@@ -33,7 +34,9 @@ const withFiles = async commits => {
 
 const onlyPackageCommits = async commits => {
   const packagePath = await getPackagePath();
+  
   debug('Filter commits by package path: "%s"', packagePath);
+   
   const commitsWithFiles = await withFiles(commits);
   // Convert package root path into segments - one for each folder
   const packageSegments = packagePath.split(path.sep);
@@ -44,19 +47,20 @@ const onlyPackageCommits = async commits => {
     const packageFile = files.find(file => {
       const fileSegments = path.normalize(file).split(path.sep);
       // Check the file is a *direct* descendent of the package folder (or the folder itself)
-      return packageSegments.every(
+      const packageMatch = packageSegments.every(
         (packageSegment, i) => packageSegment === fileSegments[i]
       );
+      const isAffected = isAffectedByPath(packagePath, file);
+      return packageMatch || isAffected;
     });
 
-    if (packageFile) {
+    
       debug(
         'Including commit "%s" because it modified package file "%s".',
         subject,
         packageFile
       );
-    }
-
+    
     return !!packageFile;
   });
 };

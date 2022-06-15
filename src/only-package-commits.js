@@ -3,7 +3,7 @@ const pkgUp = require('pkg-up');
 const readPkg = require('read-pkg');
 const path = require('path');
 const pLimit = require('p-limit');
-const debug = require('debug')('semantic-release:monorepo');
+const debug = require('debug')('semantic-release:nx');
 const { getCommitFiles, getRoot } = require('./git-utils');
 const { mapCommits } = require('./options-transforms');
 const { isAffectedByPath } = require('./nx-utils');
@@ -54,12 +54,13 @@ const onlyPackageCommits = async commits => {
       return packageMatch || isAffected;
     });
 
-    
+    if(packageFile){
       debug(
         'Including commit "%s" because it modified package file "%s".',
         subject,
         packageFile
       );
+    }
     
     return !!packageFile;
   });

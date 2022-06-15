@@ -13,7 +13,7 @@ const getDependencyPaths = (project) => {
   if (depGraphCache[project]) return depGraphCache[project];
   const depsFile = `tmp/${project}-deps.json`;
   execSync(`npx nx dep-graph --focus ${project} --file ${depsFile}`);
-  const contents = readFileSync(depsFile, "utf-8");
+  const contents = readFileSync(`../../${depsFile}`, "utf-8");
   const { graph } = JSON.parse(contents);
   const result = new Set();
   const dependencies = graph.dependencies[project];

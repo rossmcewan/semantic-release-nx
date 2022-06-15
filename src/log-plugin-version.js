@@ -1,6 +1,6 @@
 const { resolve } = require('path');
 const readPkg = require('read-pkg');
-const debug = require('debug')('semantic-release:monorepo');
+const debug = require('debug')('semantic-release:nx');
 
 const logPluginVersion = type => plugin => async (pluginConfig, config) => {
   if (config.options.debug) {

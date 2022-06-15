@@ -20,15 +20,14 @@
     "pkg-up": "^2.0.0",
     "ramda": "^0.25.0",
     "read-pkg": "^5.0.0",
-    "semantic-release-plugin-decorators": "^3.0.0"
-  },
-  "devDependencies": {
     "get-stream": "^6.0.1",
     "git-log-parser": "^1.2.0",
     "file-url": "^3.0.0",
     "p-each-series": "^2.1.0",
     "fs-extra": "^10.0.1",
-    "husky": "^4.2.1",
+    "semantic-release-plugin-decorators": "^3.0.0"
+  },
+  "devDependencies": {
     "jest": "^25.1.0",
     "lint-staged": "^10.0.7",
     "prettier": "^1.19.1",

@@ -1,4 +1,4 @@
-# semantic-release-nx
+# @rossmcewan/semantic-release-nx
 
 Apply [`semantic-release`'s](https://github.com/semantic-release/semantic-release) automatic publishing to an [Nx](https://nx.dev) monorepo.
 
@@ -18,25 +18,25 @@ Additionally, if a commit touches a file of a package that is a dependency of th
 In order to avoid version collisions, generated git tags are namespaced using the given package's name: `<package-name>-<version>`.
 
 ## Install
-Both `semantic-release` and `semantic-release-nx` must be accessible in each monorepo package.
+Both `semantic-release` and `@rossmcewan/semantic-release-nx` must be accessible in each monorepo package.
 
 ```bash
-npm install -D semantic-release semantic-release-nx
+npm install -D semantic-release @rossmcewan/semantic-release-nx
 ```
 
 ## Usage
 
-Run `semantic-release` in an **individual monorepo package** and apply `semantic-release-nx` via the [`extends`](https://github.com/semantic-release/semantic-release/blob/master/docs/usage/configuration.md#extends) option.
+Run `semantic-release` in an **individual monorepo package** and apply `@rossmcewan/semantic-release-nx` via the [`extends`](https://github.com/semantic-release/semantic-release/blob/master/docs/usage/configuration.md#extends) option.
 
 On the command line:
 ```bash
-$ npm run semantic-release -e semantic-release-nx
+$ npm run semantic-release -e @rossmcewan/semantic-release-nx
 ```
 
 Or in the [release config](https://github.com/semantic-release/semantic-release/blob/master/docs/usage/configuration.md#configuration-file):
 ```json
 {
-  "extends": "semantic-release-nx"
+  "extends": "@rossmcewan/semantic-release-nx"
 }
 ```
 
@@ -45,7 +45,7 @@ NOTE: This library **CAN'T** be applied via the `plugins` option.
 ```json
 {
   "plugins": [
-    "semantic-release-nx" // This WON'T work
+    "@rossmcewan/semantic-release-nx" // This WON'T work
   ]
 }
 ```
@@ -53,17 +53,17 @@ NOTE: This library **CAN'T** be applied via the `plugins` option.
 ### With Yarn Workspaces
 
 ```bash
-$ yarn workspaces run semantic-release -e semantic-release-nx
+$ yarn workspaces run semantic-release -e @rossmcewan/semantic-release-nx
 ```
 
 ### With pnpm
 [pnpm](https://pnpm.io/) has built-in [workspace](https://pnpm.io/workspaces) functionality for monorepos. Similarly to the above, you can use pnpm to make release in all packages:
 
 ```bash
-pnpm -r --workspace-concurrency=1 exec -- npx --no-install semantic-release -e semantic-release-nx
+pnpm -r --workspace-concurrency=1 exec -- npx --no-install semantic-release -e @rossmcewan/semantic-release-nx
 ```
 
- Thanks to how [`npx's package resolution works`](https://github.com/npm/npx#description), if the repository root is in `$PATH` (typically true on CI), `semantic-release` and `semantic-release-nx` can be installed once in the repo root instead of in each individual package, likely saving both time and disk space.
+ Thanks to how [`npx's package resolution works`](https://github.com/npm/npx#description), if the repository root is in `$PATH` (typically true on CI), `semantic-release` and `@rossmcewan/semantic-release-nx` can be installed once in the repo root instead of in each individual package, likely saving both time and disk space.
 
 
 ## Advanced

@@ -18,7 +18,6 @@ const getDependencyPaths = (project) => {
   const result = new Set();
   const dependencies = graph.dependencies[project];
   dependencies
-    .filter((dependency) => dependency.type === "static")
     .forEach((dependency) => {
       const dependencyNode = graph.nodes[dependency.target];
       result.add(dependencyNode.data.root);

@@ -1,4 +1,4 @@
-import { resolve } from 'path';
+import { resolve } from 'node:path';
 import { readPackage } from 'read-pkg';
 import debugFactory from 'debug';
 

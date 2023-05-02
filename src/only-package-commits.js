@@ -1,7 +1,7 @@
 import { identity, memoizeWith, pipeP } from 'ramda';
 import { pkgUp } from 'pkg-up';
 import { readPackage } from 'read-pkg';
-import path from 'path';
+import path from 'node:path';
 import pLimit from 'p-limit';
 import debugFactory from 'debug';
 const debug = debugFactory('semantic-release:nx');

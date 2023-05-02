@@ -1,5 +1,4 @@
-import { describe, expect, it, jest } from '@jest/globals';
-import { isAffectedByPath } from './nx-utils.js';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 const graphFixture = {
   graph: {
@@ -68,11 +67,18 @@ const graphFixture = {
 };
 
 jest.unstable_mockModule('node:fs', () => ({
-  readFileSync: jest.fn(),
+  readFileSync: jest.fn().mockReturnValue(JSON.stringify(graphFixture)),
 }));
-jest.mock('child_process');
+
+jest.unstable_mockModule('node:child_process', () => ({
+  execSync: jest.fn(),
+}));
+
+const isAffectedByPath = (await import('./nx-utils.js')).isAffectedByPath;
 
 describe('nx utils', () => {
+  beforeEach(() => {});
+
   it('should return true if project is affected by files', () => {
     const projectPath = 'packages/project-a';
     const filesPath = 'packages/project-d/src/thefile.js';

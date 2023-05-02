@@ -1,13 +1,8 @@
-import { jest, describe, expect, it, beforeEach } from '@jest/globals';
-
-import { isAffectedByPath } from './nx-utils.js';
-const mockIsAffectedByPath = jest.fn();
-jest.mock('./nx-utils.js', () => ({
-  isAffectedByPath: mockIsAffectedByPath,
-}));
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import path from 'node:path';
 import { gitCommitsWithFiles, initGitRepo } from './git-utils.js';
-import { onlyPackageCommits, withFiles } from './only-package-commits.js';
-import path from 'path';
+import { withFiles } from './only-package-commits.js';
+
 
 async function getCommitWithFileFromMessage(commits, message) {
   const commitsWithFiles = await withFiles(
@@ -20,10 +15,20 @@ async function getCommitWithFileFromMessage(commits, message) {
   }
 }
 
+const mockIsAffectedByPath = jest.fn();
+jest.unstable_mockModule('./nx-utils.js', () => ({
+  isAffectedByPath: mockIsAffectedByPath,
+}));
+
+const onlyPackageCommits = (await import('./only-package-commits.js')).onlyPackageCommits;
+
+
+
 describe('filter commits', () => {
   beforeEach(() => {
     mockIsAffectedByPath.mockReturnValue(false);
   });
+
   it('should filter 0 commits (no root folder support) ', async () => {
     const gitRepo = await initGitRepo(false);
     let commitsToCreate = [

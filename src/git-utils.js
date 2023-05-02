@@ -4,7 +4,7 @@ import fse from 'fs-extra';
 import getStream from 'get-stream';
 import gitLogParser from 'git-log-parser';
 import pEachSeries from 'p-each-series';
-import path from 'path';
+import path from 'node:path';
 import { pipeP, split } from 'ramda';
 import * as tempy from 'tempy';
 

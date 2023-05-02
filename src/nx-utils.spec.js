@@ -1,7 +1,4 @@
-import { describe, expect, it } from '@jest/globals';
-
-import fs from 'fs';
-import childProcess from 'child_process';
+import { describe, expect, it, jest } from '@jest/globals';
 import { isAffectedByPath } from './nx-utils.js';
 
 const graphFixture = {
@@ -70,8 +67,9 @@ const graphFixture = {
   criticalPath: [],
 };
 
-jest.mock('fs');
-fs.readFileSync.mockReturnValue(JSON.stringify(graphFixture));
+jest.unstable_mockModule('node:fs', () => ({
+  readFileSync: jest.fn(),
+}));
 jest.mock('child_process');
 
 describe('nx utils', () => {

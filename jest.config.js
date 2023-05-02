@@ -1,3 +1,1 @@
-module.exports = {
-    moduleDirectories: ['node_modules', 'src'],
-};
+export default { transform: {} };

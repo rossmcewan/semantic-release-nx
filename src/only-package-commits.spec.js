@@ -1,7 +1,10 @@
-import { describe, expect, it, beforeEach } from '@jest/globals';
+import { jest, describe, expect, it, beforeEach } from '@jest/globals';
 
 import { isAffectedByPath } from './nx-utils.js';
-jest.mock('./nx-utils');
+const mockIsAffectedByPath = jest.fn();
+jest.mock('./nx-utils.js', () => ({
+  isAffectedByPath: mockIsAffectedByPath,
+}));
 import { gitCommitsWithFiles, initGitRepo } from './git-utils.js';
 import { onlyPackageCommits, withFiles } from './only-package-commits.js';
 import path from 'path';
@@ -19,7 +22,7 @@ async function getCommitWithFileFromMessage(commits, message) {
 
 describe('filter commits', () => {
   beforeEach(() => {
-    isAffectedByPath.mockReturnValue(false);
+    mockIsAffectedByPath.mockReturnValue(false);
   });
   it('should filter 0 commits (no root folder support) ', async () => {
     const gitRepo = await initGitRepo(false);
@@ -114,7 +117,7 @@ describe('filter commits', () => {
   });
 
   it('should filter 4 commits (folder module2) but is depended on by module1', async () => {
-    isAffectedByPath.mockReturnValue(true);
+    mockIsAffectedByPath.mockReturnValue(true);
 
     const gitRepo = await initGitRepo(false);
     let commitsToCreate = [

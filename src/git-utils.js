@@ -1,12 +1,12 @@
-import execa from 'execa';
-import { pipeP, split } from 'ramda';
-import fse from 'fs-extra';
-import path from 'path';
-import tempy from 'tempy';
+import { execa } from 'execa';
 import fileUrl from 'file-url';
+import fse from 'fs-extra';
+import getStream from 'get-stream';
 import gitLogParser from 'git-log-parser';
 import pEachSeries from 'p-each-series';
-import getStream from 'get-stream';
+import path from 'path';
+import { pipeP, split } from 'ramda';
+import * as tempy from 'tempy';
 
 const git = async (args, options = {}) => {
   const { stdout } = await execa('git', args, options);
@@ -70,7 +70,7 @@ export const gitCommitsWithFiles = async (commits) => {
  * @return {{cwd: string, repositoryUrl: string}} The path of the repository
  */
 export const initGit = async (withRemote) => {
-  const cwd = tempy.directory();
+  const cwd = tempy.temporaryDirectory();
   const args = withRemote
     ? ['--bare', '--initial-branch=master']
     : ['--initial-branch=master'];
@@ -150,7 +150,7 @@ export const gitGetCommits = async (from) => {
  * @param {String} [branch='master'] the branch to initialize.
  */
 export const initBareRepo = async (repositoryUrl, branch = 'master') => {
-  const cwd = tempy.directory();
+  const cwd = tempy.temporaryDirectory();
   await execa('git', ['clone', '--no-hardlinks', repositoryUrl, cwd], { cwd });
   await gitCheckout(branch, true, { cwd });
   gitCommits(['Initial commit'], { cwd });
@@ -195,7 +195,7 @@ export const gitShallowClone = (
   branch = 'master',
   depth = 1,
 ) => {
-  const cwd = tempy.directory();
+  const cwd = tempy.temporaryDirectory();
 
   execa(
     'git',

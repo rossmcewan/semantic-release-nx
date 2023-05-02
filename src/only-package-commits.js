@@ -1,6 +1,6 @@
 import { identity, memoizeWith, pipeP } from 'ramda';
-import pkgUp from 'pkg-up';
-import readPkg from 'read-pkg';
+import { pkgUp } from 'pkg-up';
+import { readPackage } from 'read-pkg';
 import path from 'path';
 import pLimit from 'p-limit';
 import debugFactory from 'debug';
@@ -76,7 +76,7 @@ const tapA = (fn) => async (x) => {
 const logFilteredCommitCount =
   (logger) =>
   async ({ commits }) => {
-    const { name } = await readPkg();
+    const { name } = await readPackage();
 
     logger.log(
       'Found %s commits for package %s since last release',

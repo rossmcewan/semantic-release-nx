@@ -1,9 +1,9 @@
-const {
+import {describe, expect, it} from '@jest/globals'
+
+import {
   mapNextReleaseVersion,
-  mapLastReleaseVersionToLastReleaseGitTag,
-  mapNextReleaseVersionToNextReleaseGitTag,
   mapCommits,
-} = require('./options-transforms');
+} from './options-transforms.js';
 
 const OPTIONS = {
   commits: [1, 2, 3, 4],

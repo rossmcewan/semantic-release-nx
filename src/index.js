@@ -1,16 +1,12 @@
-const readPkg = require("read-pkg");
-const { compose } = require("ramda");
-const { withOnlyPackageCommits } = require("./only-package-commits");
-const versionToGitTag = require("./version-to-git-tag");
-const logPluginVersion = require("./log-plugin-version");
-const { wrapStep } = require("semantic-release-plugin-decorators");
+import readPkg from 'read-pkg';
+import { compose } from 'ramda';
+import { withOnlyPackageCommits } from './only-package-commits.js';
+import versionToGitTag from './version-to-git-tag.js';
+import {logPluginVersion} from './log-plugin-version.js';
+import { wrapStep } from 'semantic-release-plugin-decorators';
+import { mapNextReleaseVersion, withOptionsTransforms } from './options-transforms.js';
 
-const {
-  mapNextReleaseVersion,
-  withOptionsTransforms,
-} = require("./options-transforms");
-
-const analyzeCommits = wrapStep(
+export const analyzeCommits = wrapStep(
   "analyzeCommits",
   compose(logPluginVersion("analyzeCommits"), withOnlyPackageCommits),
   {
@@ -18,7 +14,7 @@ const analyzeCommits = wrapStep(
   }
 );
 
-const generateNotes = wrapStep(
+export const generateNotes = wrapStep(
   "generateNotes",
   compose(
     logPluginVersion("generateNotes"),
@@ -30,7 +26,7 @@ const generateNotes = wrapStep(
   }
 );
 
-const success = wrapStep(
+export const success = wrapStep(
   "success",
   compose(
     logPluginVersion("success"),
@@ -42,7 +38,7 @@ const success = wrapStep(
   }
 );
 
-const fail = wrapStep(
+export const fail = wrapStep(
   "fail",
   compose(
     logPluginVersion("fail"),
@@ -54,10 +50,4 @@ const fail = wrapStep(
   }
 );
 
-module.exports = {
-  analyzeCommits,
-  generateNotes,
-  success,
-  fail,
-  tagFormat: readPkg.sync().name + "-v${version}",
-};
+export const tagFormat = readPkg.sync().name + "-v${version}";

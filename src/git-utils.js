@@ -1,12 +1,12 @@
-const execa = require('execa');
-const { pipeP, split } = require('ramda');
-const fse = require('fs-extra');
-const path = require('path');
-const tempy = require('tempy');
-const fileUrl = require('file-url');
-const gitLogParser = require('git-log-parser');
-const pEachSeries = require('p-each-series');
-const getStream = require('get-stream');
+import execa from 'execa';
+import { pipeP, split } from 'ramda';
+import fse from 'fs-extra';
+import path from 'path';
+import tempy from 'tempy';
+import fileUrl from 'file-url';
+import gitLogParser from 'git-log-parser';
+import pEachSeries from 'p-each-series';
+import getStream from 'get-stream';
 
 const git = async (args, options = {}) => {
   const { stdout } = await execa('git', args, options);
@@ -19,7 +19,7 @@ const git = async (args, options = {}) => {
  * @param hash Git commit hash.
  * @return {Promise<Array>} List of modified files in a commit.
  */
-const getCommitFiles = pipeP(
+export const getCommitFiles = pipeP(
   hash =>
     git(['diff-tree', '--root', '--no-commit-id', '--name-only', '-r', hash]),
   split('\n')
@@ -30,7 +30,7 @@ const getCommitFiles = pipeP(
  * @async
  * @return {Promise<String>} System path of the git repository.
  */
-const getRoot = () => git(['rev-parse', '--show-toplevel']);
+export const getRoot = () => git(['rev-parse', '--show-toplevel']);
 
 /**
  * Create commits on the current git repository.
@@ -40,7 +40,7 @@ const getRoot = () => git(['rev-parse', '--show-toplevel']);
  *
  * @returns {Array<Commit>} The created commits, in reverse order (to match `git log` order).
  */
-const gitCommitsWithFiles = async commits => {
+export const gitCommitsWithFiles = async commits => {
   for (const commit of commits) {
     for (const file of commit.files) {
       let filePath = path.join(process.cwd(), file.name);
@@ -69,7 +69,7 @@ const gitCommitsWithFiles = async commits => {
  * @param {Boolean} withRemote `true` to create a shallow clone of a bare repository.
  * @return {{cwd: string, repositoryUrl: string}} The path of the repository
  */
-const initGit = async withRemote => {
+export const initGit = async withRemote => {
   const cwd = tempy.directory();
   const args = withRemote
     ? ['--bare', '--initial-branch=master']
@@ -91,7 +91,7 @@ const initGit = async withRemote => {
  *
  * @returns {Array<Commit>} The created commits, in reverse order (to match `git log` order).
  */
-const gitCommits = async (messages, execaOptions) => {
+export const gitCommits = async (messages, execaOptions) => {
   await pEachSeries(
     messages,
     async message =>
@@ -117,7 +117,7 @@ const gitCommits = async (messages, execaOptions) => {
  *
  * @return {Array<Commit>} The list of parsed commits.
  */
-gitGetCommits = async from => {
+export const gitGetCommits = async from => {
   Object.assign(gitLogParser.fields, {
     hash: 'H',
     message: 'B',
@@ -149,7 +149,7 @@ gitGetCommits = async from => {
  * @param {String} repositoryUrl The URL of the bare repository.
  * @param {String} [branch='master'] the branch to initialize.
  */
-const initBareRepo = async (repositoryUrl, branch = 'master') => {
+export const initBareRepo = async (repositoryUrl, branch = 'master') => {
   const cwd = tempy.directory();
   await execa('git', ['clone', '--no-hardlinks', repositoryUrl, cwd], { cwd });
   await gitCheckout(branch, true, { cwd });
@@ -167,7 +167,7 @@ const initBareRepo = async (repositoryUrl, branch = 'master') => {
  * @param {String} [branch='master'] The branch to initialize.
  * @return {String} The path of the clone if `withRemote` is `true`, the path of the repository otherwise.
  */
-const initGitRepo = async (withRemote, branch = 'master') => {
+export const initGitRepo = async (withRemote, branch = 'master') => {
   let { cwd, repositoryUrl } = await initGit(withRemote);
   if (withRemote) {
     await initBareRepo(repositoryUrl, branch);
@@ -190,7 +190,7 @@ const initGitRepo = async (withRemote, branch = 'master') => {
  * @param {Number} [depth=1] The number of commit to clone.
  * @return {String} The path of the cloned repository.
  */
-const gitShallowClone = (repositoryUrl, branch = 'master', depth = 1) => {
+export const gitShallowClone = (repositoryUrl, branch = 'master', depth = 1) => {
   const cwd = tempy.directory();
 
   execa(
@@ -220,19 +220,10 @@ const gitShallowClone = (repositoryUrl, branch = 'master', depth = 1) => {
  * @param {Boolean} create to create the branch, `false` to checkout an existing branch.
  * @param {Object} [execaOptions] Options to pass to `execa`.
  */
-const gitCheckout = async (branch, create, execaOptions) => {
+export const gitCheckout = async (branch, create, execaOptions) => {
   await execa(
     'git',
     create ? ['checkout', '-b', branch] : ['checkout', branch],
     execaOptions
   );
-};
-
-module.exports = {
-  getCommitFiles,
-  getRoot,
-  gitCommitsWithFiles,
-  initGitRepo,
-  initGit,
-  initBareRepo,
 };

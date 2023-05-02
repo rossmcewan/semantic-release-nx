@@ -1,4 +1,6 @@
-const versionToGitTag = require('./version-to-git-tag');
+import {describe, expect, it} from '@jest/globals'
+
+import versionToGitTag from './version-to-git-tag.js';
 
 describe('#versionToGitTag', () => {
   describe('if passed a falsy version', () => {

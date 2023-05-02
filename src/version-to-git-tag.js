@@ -1,6 +1,6 @@
-const readPkg = require('read-pkg');
+import readPkg from 'read-pkg';
 
-module.exports = async version => {
+export default async version => {
   if (!version) {
     return null;
   }

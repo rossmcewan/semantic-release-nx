@@ -1,6 +1,6 @@
-const { execSync } = require("child_process");
-const { readFileSync } = require("fs");
-const path = require("path");
+import { execSync } from 'child_process';
+import { readFileSync } from 'fs';
+import path from 'path';
 
 const depGraphCache = {};
 
@@ -28,7 +28,7 @@ const getDependencyPaths = (project) => {
   return array;
 };
 
-const isAffectedByPath = (projectPath, filePath) => {
+export const isAffectedByPath = (projectPath, filePath) => {
   const project = getProjectFromPath(projectPath);
   const dependencyPaths = getDependencyPaths(project);
 
@@ -40,8 +40,4 @@ const isAffectedByPath = (projectPath, filePath) => {
     );
   });
   return !!affectedPath;
-};
-
-module.exports = {
-  isAffectedByPath,
 };

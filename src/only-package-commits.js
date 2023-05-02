@@ -1,12 +1,13 @@
-const { identity, memoizeWith, pipeP } = require('ramda');
-const pkgUp = require('pkg-up');
-const readPkg = require('read-pkg');
-const path = require('path');
-const pLimit = require('p-limit');
-const debug = require('debug')('semantic-release:nx');
-const { getCommitFiles, getRoot } = require('./git-utils');
-const { mapCommits } = require('./options-transforms');
-const { isAffectedByPath } = require('./nx-utils');
+import { identity, memoizeWith, pipeP } from 'ramda';
+import pkgUp from 'pkg-up';
+import readPkg from 'read-pkg';
+import path from 'path';
+import pLimit from 'p-limit';
+import debugFactory from 'debug';
+const debug = debugFactory('semantic-release:nx');
+import { getCommitFiles, getRoot } from './git-utils.js';
+import { mapCommits } from './options-transforms.js';
+import { isAffectedByPath } from './nx-utils.js';
 
 const memoizedGetCommitFiles = memoizeWith(identity, getCommitFiles);
 
@@ -20,7 +21,7 @@ const getPackagePath = async () => {
   return path.relative(gitRoot, path.resolve(packagePath, '..'));
 };
 
-const withFiles = async commits => {
+export const withFiles = async commits => {
   const limit = pLimit(Number(process.env.SRM_MAX_THREADS) || 500);
   return Promise.all(
     commits.map(commit =>
@@ -32,11 +33,11 @@ const withFiles = async commits => {
   );
 };
 
-const onlyPackageCommits = async commits => {
+export const onlyPackageCommits = async commits => {
   const packagePath = await getPackagePath();
-  
+
   debug('Filter commits by package path: "%s"', packagePath);
-   
+
   const commitsWithFiles = await withFiles(commits);
   // Convert package root path into segments - one for each folder
   const packageSegments = packagePath.split(path.sep);
@@ -61,7 +62,7 @@ const onlyPackageCommits = async commits => {
         packageFile
       );
     }
-    
+
     return !!packageFile;
   });
 };
@@ -82,7 +83,7 @@ const logFilteredCommitCount = logger => async ({ commits }) => {
   );
 };
 
-const withOnlyPackageCommits = plugin => async (pluginConfig, config) => {
+export const withOnlyPackageCommits = plugin => async (pluginConfig, config) => {
   const { logger } = config;
 
   return plugin(
@@ -92,10 +93,4 @@ const withOnlyPackageCommits = plugin => async (pluginConfig, config) => {
       tapA(logFilteredCommitCount(logger))
     )(config)
   );
-};
-
-module.exports = {
-  withOnlyPackageCommits,
-  onlyPackageCommits,
-  withFiles,
 };

@@ -1,8 +1,10 @@
-const { resolve } = require('path');
-const readPkg = require('read-pkg');
-const debug = require('debug')('semantic-release:nx');
+import { resolve } from 'path';
+import readPkg from 'read-pkg';
+import debugFactory from 'debug';
 
-const logPluginVersion = type => plugin => async (pluginConfig, config) => {
+const debug = debugFactory('semantic-release:nx');
+
+export const logPluginVersion = type => plugin => async (pluginConfig, config) => {
   if (config.options.debug) {
     const { version } = await readPkg(resolve(__dirname, '../'));
     debug('Running %o version %o', type, version);
@@ -10,5 +12,3 @@ const logPluginVersion = type => plugin => async (pluginConfig, config) => {
 
   return plugin(pluginConfig, config);
 };
-
-module.exports = logPluginVersion;

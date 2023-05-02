@@ -1,6 +1,8 @@
-const fs = require("fs");
-const childProcess = require("child_process");
-const SUT = require("./nx-utils");
+import {describe, expect, it} from '@jest/globals'
+
+import fs from 'fs';
+import childProcess from 'child_process';
+import {isAffectedByPath} from './nx-utils.js';
 
 const graphFixture = {
   graph: {
@@ -77,14 +79,14 @@ describe("nx utils", () => {
     const projectPath = "packages/project-a";
     const filesPath = "packages/project-d/src/thefile.js";
 
-    const isAffected = SUT.isAffectedByPath(projectPath, filesPath);
+    const isAffected = isAffectedByPath(projectPath, filesPath);
     expect(isAffected).toBe(true);
   });
   it("should return false if paths not affected by project path", () => {
     const projectPath = "packages/project-a";
     const filesPath = "packages/project-b/src/thefile.js";
 
-    const isAffected = SUT.isAffectedByPath(projectPath, filesPath);
+    const isAffected = isAffectedByPath(projectPath, filesPath);
     expect(isAffected).toBe(false);
   });
 });

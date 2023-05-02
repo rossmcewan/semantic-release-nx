@@ -1,11 +1,13 @@
-const nxUtils = require("./nx-utils");
+import {describe, expect, it, beforeEach} from '@jest/globals'
+
+import {isAffectedByPath} from './nx-utils.js';
 jest.mock("./nx-utils");
-const { gitCommitsWithFiles, initGitRepo } = require("./git-utils");
-const { onlyPackageCommits, withFiles } = require("./only-package-commits");
-const path = require("path");
+import { gitCommitsWithFiles, initGitRepo } from './git-utils.js';
+import { onlyPackageCommits, withFiles } from './only-package-commits.js';
+import path from 'path';
 
 async function getCommitWithFileFromMessage(commits, message) {
-  commitsWithFiles = await withFiles(
+  const commitsWithFiles = await withFiles(
     Array.of(commits.find((obj) => obj.subject === message))
   );
   if (commitsWithFiles.length !== 0) {
@@ -17,7 +19,7 @@ async function getCommitWithFileFromMessage(commits, message) {
 
 describe("filter commits", () => {
   beforeEach(()=>{
-    nxUtils.isAffectedByPath.mockReturnValue(false);
+    isAffectedByPath.mockReturnValue(false);
   })
   it("should filter 0 commits (no root folder support) ", async () => {
     const gitRepo = await initGitRepo(false);
@@ -31,8 +33,8 @@ describe("filter commits", () => {
       },
     ];
     process.chdir(gitRepo.cwd);
-    commits = await gitCommitsWithFiles(commitsToCreate);
-    result = await onlyPackageCommits(commits);
+    const commits = await gitCommitsWithFiles(commitsToCreate);
+    const result = await onlyPackageCommits(commits);
     expect(result).toHaveLength(0);
   });
 
@@ -51,9 +53,9 @@ describe("filter commits", () => {
       },
     ];
     process.chdir(gitRepo.cwd);
-    commits = await gitCommitsWithFiles(commitsToCreate);
+    const commits = await gitCommitsWithFiles(commitsToCreate);
     process.chdir(path.join(gitRepo.cwd, "module1"));
-    result = await onlyPackageCommits(commits);
+    const result = await onlyPackageCommits(commits);
 
     expect(result).toHaveLength(3);
     expect(result).toContainEqual(
@@ -92,9 +94,9 @@ describe("filter commits", () => {
       },
     ];
     process.chdir(gitRepo.cwd);
-    commits = await gitCommitsWithFiles(commitsToCreate);
+    const commits = await gitCommitsWithFiles(commitsToCreate);
     process.chdir(path.join(gitRepo.cwd, "module2"));
-    result = await onlyPackageCommits(commits);
+    const result = await onlyPackageCommits(commits);
 
     expect(result).toHaveLength(2);
     expect(result).not.toContainEqual(
@@ -112,8 +114,8 @@ describe("filter commits", () => {
   });
 
   it("should filter 4 commits (folder module2) but is depended on by module1", async () => {
-    nxUtils.isAffectedByPath.mockReturnValue(true);
-    
+    isAffectedByPath.mockReturnValue(true);
+
     const gitRepo = await initGitRepo(false);
     let commitsToCreate = [
       {
@@ -135,9 +137,9 @@ describe("filter commits", () => {
       },
     ];
     process.chdir(gitRepo.cwd);
-    commits = await gitCommitsWithFiles(commitsToCreate);
+    const commits = await gitCommitsWithFiles(commitsToCreate);
     process.chdir(path.join(gitRepo.cwd, "module2"));
-    result = await onlyPackageCommits(commits);
+    const result = await onlyPackageCommits(commits);
 
     expect(result).toHaveLength(4);
     expect(result).toContainEqual(

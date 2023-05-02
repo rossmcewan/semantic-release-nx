@@ -1,6 +1,6 @@
 import readPkg from 'read-pkg';
 
-export default async version => {
+export default async (version) => {
   if (!version) {
     return null;
   }

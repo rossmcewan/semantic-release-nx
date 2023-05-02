@@ -13,15 +13,14 @@ const getDependencyPaths = (project) => {
   if (depGraphCache[project]) return depGraphCache[project];
   const depsFile = `tmp/${project}-deps.json`;
   execSync(`npx nx dep-graph --focus ${project} --file ${depsFile}`);
-  const contents = readFileSync(`../../${depsFile}`, "utf-8");
+  const contents = readFileSync(`../../${depsFile}`, 'utf-8');
   const { graph } = JSON.parse(contents);
   const result = new Set();
   const dependencies = graph.dependencies[project];
-  dependencies
-    .forEach((dependency) => {
-      const dependencyNode = graph.nodes[dependency.target];
-      result.add(dependencyNode.data.root);
-    });
+  dependencies.forEach((dependency) => {
+    const dependencyNode = graph.nodes[dependency.target];
+    result.add(dependencyNode.data.root);
+  });
 
   const array = Array.from(result);
   depGraphCache[project] = array;
@@ -36,7 +35,7 @@ export const isAffectedByPath = (projectPath, filePath) => {
   const affectedPath = dependencyPaths.find((dependencyPath) => {
     const pathSegments = dependencyPath.split(path.sep);
     return pathSegments.every(
-      (segment, index) => segment === fileSegments[index]
+      (segment, index) => segment === fileSegments[index],
     );
   });
   return !!affectedPath;

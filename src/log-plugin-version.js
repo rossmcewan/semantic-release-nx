@@ -4,11 +4,12 @@ import debugFactory from 'debug';
 
 const debug = debugFactory('semantic-release:nx');
 
-export const logPluginVersion = type => plugin => async (pluginConfig, config) => {
-  if (config.options.debug) {
-    const { version } = await readPkg(resolve(__dirname, '../'));
-    debug('Running %o version %o', type, version);
-  }
+export const logPluginVersion =
+  (type) => (plugin) => async (pluginConfig, config) => {
+    if (config.options.debug) {
+      const { version } = await readPkg(resolve(__dirname, '../'));
+      debug('Running %o version %o', type, version);
+    }
 
-  return plugin(pluginConfig, config);
-};
+    return plugin(pluginConfig, config);
+  };

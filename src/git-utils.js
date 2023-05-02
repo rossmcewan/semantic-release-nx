@@ -20,9 +20,9 @@ const git = async (args, options = {}) => {
  * @return {Promise<Array>} List of modified files in a commit.
  */
 export const getCommitFiles = pipeP(
-  hash =>
+  (hash) =>
     git(['diff-tree', '--root', '--no-commit-id', '--name-only', '-r', hash]),
-  split('\n')
+  split('\n'),
 );
 
 /**
@@ -40,13 +40,13 @@ export const getRoot = () => git(['rev-parse', '--show-toplevel']);
  *
  * @returns {Array<Commit>} The created commits, in reverse order (to match `git log` order).
  */
-export const gitCommitsWithFiles = async commits => {
+export const gitCommitsWithFiles = async (commits) => {
   for (const commit of commits) {
     for (const file of commit.files) {
       let filePath = path.join(process.cwd(), file.name);
       await fse.outputFile(
         filePath,
-        (file.body = !'undefined' ? file.body : commit.message)
+        (file.body = !'undefined' ? file.body : commit.message),
       );
       await execa('git', ['add', filePath]);
     }
@@ -69,7 +69,7 @@ export const gitCommitsWithFiles = async commits => {
  * @param {Boolean} withRemote `true` to create a shallow clone of a bare repository.
  * @return {{cwd: string, repositoryUrl: string}} The path of the repository
  */
-export const initGit = async withRemote => {
+export const initGit = async (withRemote) => {
   const cwd = tempy.directory();
   const args = withRemote
     ? ['--bare', '--initial-branch=master']
@@ -94,18 +94,18 @@ export const initGit = async withRemote => {
 export const gitCommits = async (messages, execaOptions) => {
   await pEachSeries(
     messages,
-    async message =>
+    async (message) =>
       (
         await execa(
           'git',
           ['commit', '-m', message, '--allow-empty', '--no-gpg-sign'],
-          execaOptions
+          execaOptions,
         )
-      ).stdout
+      ).stdout,
   );
   return (await gitGetCommits(undefined, execaOptions)).slice(
     0,
-    messages.length
+    messages.length,
   );
 };
 
@@ -117,7 +117,7 @@ export const gitCommits = async (messages, execaOptions) => {
  *
  * @return {Array<Commit>} The list of parsed commits.
  */
-export const gitGetCommits = async from => {
+export const gitGetCommits = async (from) => {
   Object.assign(gitLogParser.fields, {
     hash: 'H',
     message: 'B',
@@ -128,10 +128,10 @@ export const gitGetCommits = async from => {
     await getStream.array(
       gitLogParser.parse(
         { _: `${from ? from + '..' : ''}HEAD` },
-        { env: { ...process.env } }
-      )
+        { env: { ...process.env } },
+      ),
     )
-  ).map(commit => {
+  ).map((commit) => {
     commit.message = commit.message.trim();
     commit.gitTags = commit.gitTags.trim();
     return commit;
@@ -190,7 +190,11 @@ export const initGitRepo = async (withRemote, branch = 'master') => {
  * @param {Number} [depth=1] The number of commit to clone.
  * @return {String} The path of the cloned repository.
  */
-export const gitShallowClone = (repositoryUrl, branch = 'master', depth = 1) => {
+export const gitShallowClone = (
+  repositoryUrl,
+  branch = 'master',
+  depth = 1,
+) => {
   const cwd = tempy.directory();
 
   execa(
@@ -208,7 +212,7 @@ export const gitShallowClone = (repositoryUrl, branch = 'master', depth = 1) => 
     ],
     {
       cwd,
-    }
+    },
   );
   return cwd;
 };
@@ -224,6 +228,6 @@ export const gitCheckout = async (branch, create, execaOptions) => {
   await execa(
     'git',
     create ? ['checkout', '-b', branch] : ['checkout', branch],
-    execaOptions
+    execaOptions,
   );
 };

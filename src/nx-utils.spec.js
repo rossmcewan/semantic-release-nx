@@ -1,90 +1,90 @@
-import {describe, expect, it} from '@jest/globals'
+import { describe, expect, it } from '@jest/globals';
 
 import fs from 'fs';
 import childProcess from 'child_process';
-import {isAffectedByPath} from './nx-utils.js';
+import { isAffectedByPath } from './nx-utils.js';
 
 const graphFixture = {
   graph: {
     nodes: {
-      "project-a": {
-        name: "project-a",
-        type: "lib",
+      'project-a': {
+        name: 'project-a',
+        type: 'lib',
         data: {
-          root: "packages/project-a",
+          root: 'packages/project-a',
         },
       },
-      "project-b": {
-        name: "project-b",
-        type: "lib",
+      'project-b': {
+        name: 'project-b',
+        type: 'lib',
         data: {
-          root: "packages/project-b",
+          root: 'packages/project-b',
         },
       },
-      "project-c": {
-        name: "project-c",
-        type: "lib",
+      'project-c': {
+        name: 'project-c',
+        type: 'lib',
         data: {
-          root: "packages/project-c",
+          root: 'packages/project-c',
         },
       },
-      "project-d": {
-        name: "project-d",
-        type: "lib",
+      'project-d': {
+        name: 'project-d',
+        type: 'lib',
         data: {
-          root: "packages/project-d",
+          root: 'packages/project-d',
         },
       },
     },
     dependencies: {
-      "project-a": [
+      'project-a': [
         {
-          source: "project-a",
-          target: "project-d",
-          type: "static",
+          source: 'project-a',
+          target: 'project-d',
+          type: 'static',
         },
       ],
-      "project-b": [
+      'project-b': [
         {
-          source: "project-b",
-          target: "project-d",
-          type: "static",
+          source: 'project-b',
+          target: 'project-d',
+          type: 'static',
         },
         {
-          source: "project-b",
-          target: "project-a",
-          type: "static",
-        },
-      ],
-      "project-c": [
-        {
-          source: "project-c",
-          target: "project-d",
-          type: "static",
+          source: 'project-b',
+          target: 'project-a',
+          type: 'static',
         },
       ],
-      "project-d": [],
+      'project-c': [
+        {
+          source: 'project-c',
+          target: 'project-d',
+          type: 'static',
+        },
+      ],
+      'project-d': [],
     },
   },
   affectedProjects: [],
   criticalPath: [],
 };
 
-jest.mock("fs");
+jest.mock('fs');
 fs.readFileSync.mockReturnValue(JSON.stringify(graphFixture));
-jest.mock("child_process");
+jest.mock('child_process');
 
-describe("nx utils", () => {
-  it("should return true if project is affected by files", () => {
-    const projectPath = "packages/project-a";
-    const filesPath = "packages/project-d/src/thefile.js";
+describe('nx utils', () => {
+  it('should return true if project is affected by files', () => {
+    const projectPath = 'packages/project-a';
+    const filesPath = 'packages/project-d/src/thefile.js';
 
     const isAffected = isAffectedByPath(projectPath, filesPath);
     expect(isAffected).toBe(true);
   });
-  it("should return false if paths not affected by project path", () => {
-    const projectPath = "packages/project-a";
-    const filesPath = "packages/project-b/src/thefile.js";
+  it('should return false if paths not affected by project path', () => {
+    const projectPath = 'packages/project-a';
+    const filesPath = 'packages/project-b/src/thefile.js';
 
     const isAffected = isAffectedByPath(projectPath, filesPath);
     expect(isAffected).toBe(false);

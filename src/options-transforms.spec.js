@@ -1,9 +1,6 @@
-import {describe, expect, it} from '@jest/globals'
+import { describe, expect, it } from '@jest/globals';
 
-import {
-  mapNextReleaseVersion,
-  mapCommits,
-} from './options-transforms.js';
+import { mapNextReleaseVersion, mapCommits } from './options-transforms.js';
 
 const OPTIONS = {
   commits: [1, 2, 3, 4],
@@ -15,13 +12,13 @@ const OPTIONS = {
   },
 };
 
-const even = n => n % 2 === 0;
-const toTag = x => `tag-${x}`;
+const even = (n) => n % 2 === 0;
+const toTag = (x) => `tag-${x}`;
 
 describe('semantic-release plugin options transforms', () => {
   describe('#mapCommits', () => {
     it('allows mapping the "commits" option', async () => {
-      const fn = commits => commits.filter(even);
+      const fn = (commits) => commits.filter(even);
 
       expect(await mapCommits(fn)(OPTIONS)).toEqual({
         ...OPTIONS,

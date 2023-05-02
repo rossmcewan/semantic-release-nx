@@ -2,52 +2,55 @@ import readPkg from 'read-pkg';
 import { compose } from 'ramda';
 import { withOnlyPackageCommits } from './only-package-commits.js';
 import versionToGitTag from './version-to-git-tag.js';
-import {logPluginVersion} from './log-plugin-version.js';
+import { logPluginVersion } from './log-plugin-version.js';
 import { wrapStep } from 'semantic-release-plugin-decorators';
-import { mapNextReleaseVersion, withOptionsTransforms } from './options-transforms.js';
+import {
+  mapNextReleaseVersion,
+  withOptionsTransforms,
+} from './options-transforms.js';
 
 export const analyzeCommits = wrapStep(
-  "analyzeCommits",
-  compose(logPluginVersion("analyzeCommits"), withOnlyPackageCommits),
+  'analyzeCommits',
+  compose(logPluginVersion('analyzeCommits'), withOnlyPackageCommits),
   {
-    wrapperName: "@rossmcewan/semantic-release-nx",
-  }
+    wrapperName: '@rossmcewan/semantic-release-nx',
+  },
 );
 
 export const generateNotes = wrapStep(
-  "generateNotes",
+  'generateNotes',
   compose(
-    logPluginVersion("generateNotes"),
+    logPluginVersion('generateNotes'),
     withOnlyPackageCommits,
-    withOptionsTransforms([mapNextReleaseVersion(versionToGitTag)])
+    withOptionsTransforms([mapNextReleaseVersion(versionToGitTag)]),
   ),
   {
-    wrapperName: "@rossmcewan/semantic-release-nx",
-  }
+    wrapperName: '@rossmcewan/semantic-release-nx',
+  },
 );
 
 export const success = wrapStep(
-  "success",
+  'success',
   compose(
-    logPluginVersion("success"),
+    logPluginVersion('success'),
     withOnlyPackageCommits,
-    withOptionsTransforms([mapNextReleaseVersion(versionToGitTag)])
+    withOptionsTransforms([mapNextReleaseVersion(versionToGitTag)]),
   ),
   {
-    wrapperName: "@rossmcewan/semantic-release-nx",
-  }
+    wrapperName: '@rossmcewan/semantic-release-nx',
+  },
 );
 
 export const fail = wrapStep(
-  "fail",
+  'fail',
   compose(
-    logPluginVersion("fail"),
+    logPluginVersion('fail'),
     withOnlyPackageCommits,
-    withOptionsTransforms([mapNextReleaseVersion(versionToGitTag)])
+    withOptionsTransforms([mapNextReleaseVersion(versionToGitTag)]),
   ),
   {
-    wrapperName: "@rossmcewan/semantic-release-nx",
-  }
+    wrapperName: '@rossmcewan/semantic-release-nx',
+  },
 );
 
-export const tagFormat = readPkg.sync().name + "-v${version}";
+export const tagFormat = readPkg.sync().name + '-v${version}';

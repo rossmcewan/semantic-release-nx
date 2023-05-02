@@ -1,4 +1,3 @@
-import { readPackage } from 'read-pkg';
 import { compose } from 'ramda';
 import { withOnlyPackageCommits } from './only-package-commits.js';
 import versionToGitTag from './version-to-git-tag.js';

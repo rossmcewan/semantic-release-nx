@@ -1,8 +1,15 @@
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import path from 'node:path';
 import { gitCommitsWithFiles, initGitRepo } from './git-utils.js';
-import { withFiles } from './only-package-commits.js';
 
+const mockIsAffectedByPath = jest.fn();
+jest.unstable_mockModule('./nx-utils.js', () => ({
+  isAffectedByPath: mockIsAffectedByPath,
+}));
+
+const onlyPackageCommits = (await import('./only-package-commits.js'))
+  .onlyPackageCommits;
+const withFiles = (await import('./only-package-commits.js')).withFiles;
 
 async function getCommitWithFileFromMessage(commits, message) {
   const commitsWithFiles = await withFiles(
@@ -14,15 +21,6 @@ async function getCommitWithFileFromMessage(commits, message) {
     return null;
   }
 }
-
-const mockIsAffectedByPath = jest.fn();
-jest.unstable_mockModule('./nx-utils.js', () => ({
-  isAffectedByPath: mockIsAffectedByPath,
-}));
-
-const onlyPackageCommits = (await import('./only-package-commits.js')).onlyPackageCommits;
-
-
 
 describe('filter commits', () => {
   beforeEach(() => {

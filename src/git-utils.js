@@ -16,7 +16,7 @@ const git = async (args, options = {}) => {
 /**
  * // https://stackoverflow.com/questions/424071/how-to-list-all-the-files-in-a-commit
  * @async
- * @param hash Git commit hash.
+ * @param hash Git commit hash
  * @return {Promise<Array>} List of modified files in a commit.
  */
 const getCommitFiles = pipeP(
